@@ -9,19 +9,13 @@
 % Return value:                                                            
 %   im_res -- resulting image                                                                   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function im_res = e_mod(im, m, alpha)
+function im_res = e_mod(im, m, alpha)    
     % Get width, height 
     [w,h] = size(im);
     
-    % Reference pattern (width x height array)   
-    wr = rand(w, h)*2-1;
-    
-    tm = mean2(wr);
-    wr = wr-tm;
-    
-    % Normalized pattern
-    st_dev = std2(wr);
-    wr = wr/st_dev;
+    % Reference pattern (width x height array),
+    % randomly generated (rng started from same seed)
+    wr = gen_rand(w, h);
     
     % Encode a one-bit message by either copying or negating the reference pattern
     if (m == 0)

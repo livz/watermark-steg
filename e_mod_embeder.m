@@ -3,12 +3,13 @@
 % ( main difference: the formula for computing each pixel of the watermaked
 % image (formula (11.4) ))
 %
-% Test image is 512 x 512 x 8 (width x height x bpp)
+% Test images are 512 x 512 x 8 (width x height x bpp), colored and greyscale
 %   ==> 64 block (64x64 each)
 % Mark to be embeded: 64 x 64 x 1 (1 bit colors, 64x64 image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initialize internal random number generator
+% (same initial state as the detector; synchronized)
 seed = hex2dec('b4d533d');
 rng(seed);
 
@@ -17,7 +18,7 @@ alpha = 5;
 
 % Read original images
 base_im_dir = 'images';
-im_files = {'fish', 'jump', 'lena', 'plane'};
+im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
 
 for idx = 1:length(im_files)
     curr_im = strcat(base_im_dir, '\', im_files{idx}, '.bmp');
