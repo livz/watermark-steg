@@ -66,7 +66,8 @@ end
 % 2. Zgomotul este mult mai puternic:
 %   a. In cazul in care imaginile sunt alb-negru, (pixeli cu valori spre extreme, 
 %       spre 0 sau 255) 
-%   b. Daca histograma este foarte aplatizata (nu se mai poate face corect detectia)
+%   b. Daca histograma este uniforma(nu se mai poate face corect detectia, din
+%      cauza operatiei modulo 256, care produce tot o distributie uniforma. 
+%      (11.1, experiment 2))
 % 
-% (11.1, experiment 2)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
