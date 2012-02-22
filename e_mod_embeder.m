@@ -2,10 +2,10 @@
 % Technique similar with the spatial embeder from Lab 1
 % ( main difference: the formula for computing each pixel of the watermaked
 % image (formula (11.4) ))
-
+%
 % Test image is 512 x 512 x 8 (width x height x bpp)
 %   ==> 64 block (64x64 each)
-% Mark to be embeded: 64 x 64 x 1 (black or white 64x64 image)
+% Mark to be embeded: 64 x 64 x 1 (1 bit colors, 64x64 image)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Initialize internal random number generator
@@ -53,11 +53,20 @@ for idx = 1:length(im_files)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Se observa un zgomot perceptibil, denumit de autor 'salt-and-pepper noise'
+% 1. Se observa un zgomot perceptibil, denumit de autor 'salt-and-pepper noise'
 % (cand valoarea unui pixel se da peste cap datorita operatiei modulo 256 din 
 % embederul e_mod),
 % dar care poate fi tolerat daca se are in vedere ca folosind aceasta metoda 
 % de autentificare, imaginea originala va fi recuperata complet din acest 
 % 'erasable watermark', iar imaginea marcata are doar scop demonstrativ, de
 % prezentare, si eventual de protectie a originalului
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. Zgomotul este mult mai puternic:
+%   a. In cazul in care imaginile sunt alb-negru, (pixeli cu valori spre extreme, 
+%       spre 0 sau 255) 
+%   b. Daca histograma este foarte aplatizata (nu se mai poate face corect detectia)
+% 
+% (11.1, experiment 2)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
