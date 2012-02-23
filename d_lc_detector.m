@@ -30,6 +30,9 @@ for idx = 1:length(im_files)
 
     % Allocate space for mark
     mark = zeros(64, 64);
+    
+    % Allocate space for reconstructing the original
+    im_orig = zeros(w, h);
 
     % Iterate through every 64x64 block from input image
     % (dimensions equal to those of the mark)
@@ -39,12 +42,29 @@ for idx = 1:length(im_files)
             block = im_in((i-1)*8+1: i*8, (j-1)*8+1: j*8);    
 
             % detect marked bit
-            bit = d_lc(block, tlc);
+            [bit, wm] = d_lc(block, tlc);
 
             % save bit in the mark
             mark(i,j) = bit;
+            
+            % try to reconstruct original image
+            im_orig((i-1)*8+1: i*8, (j-1)*8+1: j*8) = mod(double(block) - floor(tlc * wm + 0.5), 256);
+            
         end
     end
 
-    imwrite(uint8(mark), strcat(base_im_dir, '\', im_files{idx}, '_d_lc.bmp'));
+    imwrite(uint8(mark), strcat(base_im_dir, '\', im_files{idx}, '_d_lc_mark.bmp'));
+    imwrite(uint8(im_orig), strcat(base_im_dir, '\', im_files{idx}, '_d_lc_restored.bmp'));
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Concluzii --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. Se observa ca se rezolva problema clippingului din E_BLIND, prin
+% operatia de modulo 256, care recpereaza bitii originali. 
+%
+% 2. Se observa o mica variatie a calitatii imaginii recuperate, intre imaginile
+% din setul de test (Datorita rotunjirilor din operatiile cu numere double,
+% unele imagini originale nu mai pot fi recuperate la fel de fidel).
+%
+% 3. Atata timp cat pixelii nu fac wrap-around in proportie foarte mare,
+% detectorul D_LC functioneaza corect, detectand watermark-ul.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Technique similar with the spatial embeder from Lab 1
 % ( main difference: the formula for computing each pixel of the watermaked
-% image (formula (11.4) ))
+% image (formula (11.4)) - modulo addition instead of clipping ) 
 %
 % Test images are 512 x 512 x 8 (width x height x bpp), colored and greyscale
 %   ==> 64 block (64x64 each)
@@ -53,7 +53,7 @@ for idx = 1:length(im_files)
     imwrite(uint8(im_out), strcat(base_im_dir, '\', im_files{idx}, '_e_mod.bmp'));
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Concluzii --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. Se observa un zgomot perceptibil, denumit de autor 'salt-and-pepper noise'
 % (cand valoarea unui pixel se da peste cap datorita operatiei modulo 256 din 
 % embederul e_mod),
@@ -61,14 +61,13 @@ end
 % de autentificare, imaginea originala va fi recuperata complet din acest 
 % 'erasable watermark', iar imaginea marcata are doar scop demonstrativ, de
 % prezentare, si eventual de protectie a originalului
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % 2. Zgomotul este mult mai puternic:
 %   a. In cazul in care imaginile sunt alb-negru, (pixeli cu valori spre extreme, 
 %       spre 0 sau 255) 
 %   b. Daca histograma este uniforma(nu se mai poate face corect detectia, din
 %      cauza operatiei modulo 256, care produce tot o distributie uniforma. 
 %      (11.1, experiment 2))
-% 
+%   c. S-a observat variatia zgomotului in functie de imagine si de
+%      histograma 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -27,5 +27,5 @@ function im_res = e_mod(im, m, alpha)
     % Scale the message pattern by alpha and add it to the image,
     % modulo 256 (NOTE: the scaled reference pattern is rounded to an
     % integer before adding) 
-    im_res = double(im) + mod(floor(alpha*wm + 0.5), 256);
+    im_res = mod(double(im) + floor(alpha*wm + 0.5), 256);
     

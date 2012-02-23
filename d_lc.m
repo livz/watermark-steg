@@ -6,9 +6,10 @@
 %   tlc -- detection threshold                                                    
 %                                                                         
 % Return value:                                                           
-%   decoded message (0 or 1)  
+%   m -- decoded message (0 or 255), or no watermark (mark is black-white)
+%   wr -- watermark reference pattern
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function m = d_lc(c, tlc)
+function [m, wr] = d_lc(c, tlc)
     % Get width, height
     [w, h] = size(c);
 
@@ -21,13 +22,13 @@ function m = d_lc(c, tlc)
 
     % Find the linear correlation between the image and the reference
     % pattern
-    lc = sum(sum(c.*wr))/ (w * h);
-    
+	lc = sum(sum(c.*wr))/ (w * h);
+       
     if (lc > tlc)
-        m = 1;
+        m = 255;
     elseif (lc < -tlc)
         m = 0;
     else
-        m = 0;
-    end
+        m = 255;  % no watermark detected
+    end    
 end
