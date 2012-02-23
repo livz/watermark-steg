@@ -7,7 +7,7 @@
 %                                                                         
 % Return value:                                                           
 %   m -- decoded message (0 or 255), or no watermark (mark is black-white)
-%   wr -- watermark reference pattern
+%   wr -- watermark reference pattern (used for restoring the original)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [m, wr] = d_lc(c, tlc)
     % Get width, height

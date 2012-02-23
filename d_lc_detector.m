@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This script uses the d_lc detector to retrieve the documents maked by
-% e_mod embeder. 
+% This script uses the d_lc detector to detect the watermark and to retrieve 
+% the documents maked by e_mod embeder
 %
 % Input test images are obtained from the output of e_mod embeder.
 %
