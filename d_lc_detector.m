@@ -57,14 +57,14 @@ for idx = 1:length(im_files)
     imwrite(uint8(im_orig), strcat(base_im_dir, '\', im_files{idx}, '_d_lc_restored.bmp'));
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Concluzii --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% 1. Se observa ca se rezolva problema clippingului din E_BLIND, prin
-% operatia de modulo 256, care recpereaza bitii originali. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. The clipping problem from E_BLIND algorithm is solved by the modulo
+%    256 addition, that restores entirely the original bits.
 %
-% 2. Se observa o mica variatie a calitatii imaginii recuperate, intre imaginile
-% din setul de test (Datorita rotunjirilor din operatiile cu numere double,
-% unele imagini originale nu mai pot fi recuperate la fel de fidel).
+% 2. There is a small difference between the recovered images and the
+%    originals, because of the round operations and working with doubles. 
+%    Some images cannot be restored with the same fidelity. 
 %
-% 3. Atata timp cat pixelii nu fac wrap-around in proportie foarte mare,
-% detectorul D_LC functioneaza corect, detectand watermark-ul.
+% 3. As long as a small percent of pixels wrap around, the D_LC detector
+%    works correctly and detect the watermark.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

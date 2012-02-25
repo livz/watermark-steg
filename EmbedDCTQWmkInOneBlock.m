@@ -1,5 +1,5 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  EmbedDCTQWmkInOneBlock -- embed four bits in a block
+%  EmbedDCTQWmkInOneBlock -- embed 4 bits in a block
 %
 %  Arguments:
 %    c -- block in which to embed (in spatial domain)
@@ -8,10 +8,11 @@
 %    wmkBits -- array of four bits to embed
 %
 %  Return value:
+%    ret -- how many bits were actually embedded
 %    c -- modified block
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function c = EmbedDCTQWmkInOneBlock(c, coefs, aQ, wmkBits)
+function [ret, c] = EmbedDCTQWmkInOneBlock(c, coefs, aQ, wmkBits)
 % Save dct of the original unmodified block (for further comparisons)
 Co = dct(c);
 
@@ -25,7 +26,8 @@ while(notDone && numIterationsLeft > 0)
     
     % Convert the block into the DCT domain,
     c = dct(c);
-    
+         
+    ret = 0;
     % Embed four bits into the block
     for idx = 1: 4
         % Embed 1 watermark bit
@@ -39,6 +41,8 @@ while(notDone && numIterationsLeft > 0)
         
         if (bitWasFlipped)
             notDone = 1;
+        else
+            ret = ret + 1;
         end
     end
     
@@ -52,10 +56,13 @@ while(notDone && numIterationsLeft > 0)
 end
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%-- Observations -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. In theory, this algorithm should always succeed in embedding all bits. 
-% In practice, however, a few bits will be corrupted when the image is
-% converted back to the spatial domain, and each pixel is clipped and
-% rounded to an 8-bit value. To compensate for this, the embedder is run 
-% more than once on the image (10)
+%    In practice, however, a few bits will be corrupted when the image is
+%    converted back to the spatial domain, and each pixel is clipped and
+%    rounded to an 8-bit value. To compensate for this, the embedder is run 
+%    more than once on the image (10 times)
+%
+% 2. The percent of bits successfuly embeded is reflected in the first 
+%    output parameter.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

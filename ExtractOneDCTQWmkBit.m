@@ -18,6 +18,6 @@ Ci = floor(C(coefs)./(aQ(coefs))+0.5);
 % Find the bit value
 bit = 0;
 for i = 1: 7
-    bit = bit ^ (Ci(i) & 1);
+    bit = xor(bit, (Ci(i) & 1));
 end
 end

@@ -21,8 +21,9 @@ Ci = floor(C(coefs)./(aQ(coefs))+0.5);
 % (xor together the LSB of each resulting Ci)
 be = 0;
 for i = 1: 7
-    be = be ^ (Ci(i) & 1);
+    be = xor(be, (Ci(i) & 1));
 end
+%fprintf('\nb=%d be=%d\n', b, be);
 
 if (be ~= b)
     % Flip the least-significant bit (LSB) of one of the Ci values.

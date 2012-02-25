@@ -3,14 +3,6 @@
 %           block DCT of an image
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-image1 = imread('images\lena.bmp');
-
-% Get size of the original image
-[w, h] = size(image1);  % 512 x 512
-
-% Allocate space for the marked image
-image2 = zeros(w, h);
-
 % DCT Coefficients used to embed a semi-fragile watermark 
 coefs = [                  15 ...
                         22 23 ...
@@ -22,39 +14,59 @@ coefs = [                  15 ...
   
 % Quantization table    
 Qt = [16  11  10  16  24  40  51  61 ...
-      12  12  14  19  26  58  60  55 ...
-      14  13  16  24  40  57  69  56 ... 
-      14  17  22  29  51  87  80  62 ...
-      18  22  37  56  68 109 103  77 ...
-      24  35  55  64  81 104 113  92 ...
-      49  64  78  87 103 121 120 101 ...
-      72  92  95  98 112 100 103 99];
+    12  12  14  19  26  58  60  55 ...
+    14  13  16  24  40  57  69  56 ...
+    14  17  22  29  51  87  80  62 ...
+    18  22  37  56  68 109 103  77 ...
+    24  35  55  64  81 104 113  92 ...
+    49  64  78  87 103 121 120 101 ...
+    72  92  95  98 112 100 103 99];
 
 % Initialize internal random number generator
-% (same initial state as the embeder; synchronized)
-seed = hex2dec('b4d533d');
+% (same initial state as the detector; synchronized)
+seed = hex2dec('dc7533d');
 rng(seed);
 
 % Strength parameter / quality factor
-alpha = 0.03;
+alpha = 0.3;
 
-% Embed 4 bits in the high-frequency DCT coefficients of each 8 x 8
-% block in the image
-for i=1:w/8
-    for j=1:h/8
-        % 8x8 block to be embeded in
-        block = image1((i-1)*8+1: i*8, (j-1)*8+1: j*8);
-        
-        % Generate 4 random bits to embed
-        bits = round(rand(1,4));
-        
-        % Randomize the array of the 28 coefficients
-        coefs = coefs(randperm(length(coefs)));
-        
-        out_block = EmbedDCTQWmkInOneBlock(reshape(block, 1, 8*8), coefs, alpha*Qt, bits); 
-        
-        % Save to output image
-        image2((i-1)*8+1: i*8, (j-1)*8+1: j*8) = reshape(out_block, 8, 8);
+% Read original images
+base_im_dir = 'images';
+im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
+
+for idx = 1:length(im_files)
+    curr_im = strcat(base_im_dir, '\', im_files{idx}, '.bmp');
+    
+    im_in = imread(curr_im);
+    im_in = double(im_in);
+    [w, h] = size(im_in);
+    
+    % Resulting marked image
+    im_out = zeros(w, h);
+    
+    % Embed 4 bits in the high-frequency DCT coefficients of each 8 x 8
+    % block in the image
+    total = 0;
+    for i=1:w/8
+        for j=1:h/8
+            % 8x8 block to be embeded in
+            block = im_in((i-1)*8+1: i*8, (j-1)*8+1: j*8);
+            
+            % Generate 4 random bits to embed
+            bits = round(rand(1,4));
+            
+            % Randomize the array of the 28 coefficients
+            coefs = coefs(randperm(length(coefs)));
+            
+            [embeded, out_block] = EmbedDCTQWmkInOneBlock(reshape(block, 1, 8*8), coefs, alpha*Qt, bits);
+            total = total + embeded;
+            
+            % Save to output image
+            im_out((i-1)*8+1: i*8, (j-1)*8+1: j*8) = reshape(out_block, 8, 8);
+        end
     end
+    
+    fprintf('Total embeded bits in %s: %d (%2.3f%%) from %d\n', ...
+        char(strcat(im_files(idx), '.bmp')), total, total/(4096*4)*100, 4096*4);
+    imwrite(uint8(im_out), strcat(base_im_dir, '\', im_files{idx}, '_e_dctq.bmp'));
 end
-imwrite(uint8(image2), 'images\lena_e_dctq.bmp');
