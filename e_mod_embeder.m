@@ -32,8 +32,7 @@ for idx = 1:length(im_files)
     % Resulting marked image
     im_out = zeros(w, h);
 
-    % Iterate through every 64x64 block from input image
-    % (dimensions equal to those of the mark)
+    % Iterate through every 64x64 blocks from input image
     for i=1:w/8
         for j=1:h/8   
             % bit to be embeded 
