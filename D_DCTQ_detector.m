@@ -1,8 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % D_DCTQ -- determine whether or not an image is authentic using a
 %           semi-fragile watermark based on DCT quantization
+% Arguments:
+%   base_im_dir -- base folder for images and output files
+%   im_files -- array with path of image files
+%   seed -- seed for random number generator
+%   alpha -- multiplier for quantization matrix
+%   tm -- threshhold for matching bits (in %)
+%
+% Return:
+%   no return value
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+function D_DCTQ_detector(base_im_dir, im_files, seed, alpha, tm)
 % DCT Coefficients used to embed a semi-fragile watermark 
 coefs = [                  15 ...
                         22 23 ...
@@ -24,25 +33,11 @@ Qt = [16  11  10  16  24  40  51  61 ...
 
 % Initialize internal random number generator
 % (same initial state as the embeder; synchronized)
-seed = hex2dec('dc7533d');
 rng(seed);
 
-% Multiplier for quantization matrix
-alpha = 0.3;
-
-% Threshhold for matching bits
-tm = 80;
-
-% Read original images
-base_im_dir = 'images';
-im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
-
 for im_idx = 1:length(im_files)
-    % Detect watermark after embedding
-    %curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '_e_dctq.bmp');
-    
-    % Detect watermark after compression
-    curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '_e_dctq_comp.bmp');
+    % Read image 
+    curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '.bmp');
     
     im_in = imread(curr_im);
     [w, h] = size(im_in);
@@ -89,4 +84,4 @@ for im_idx = 1:length(im_files)
         fprintf('Not authentic.\n');
     end
 end
-
+end

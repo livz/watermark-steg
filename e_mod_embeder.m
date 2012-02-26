@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Technique similar with the spatial embeder from Lab 1
 % ( main difference: the formula for computing each pixel of the watermaked
 % image (formula (11.4)) - modulo addition instead of clipping ) 
@@ -6,28 +6,30 @@
 % Test images are 512 x 512 x 8 (width x height x bpp), colored and greyscale
 %   ==> 64 block (64x64 each)
 % Mark to be embeded: 64 x 64 x 1 (1 bit colors, 64x64 image)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%
+% Arguments:
+%   base_im_dir -- base folder for images and output files
+%   im_files -- array with path of image files
+%   mark -- path of the mark to be embeded
+%   seed -- seed for random number generator
+%   alpha -- strength factor
+%
+% Return:
+%   no return value
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function E_MOD_embeder(base_im_dir, im_files, mark, seed, alpha)
 % Initialize internal random number generator
 % (same initial state as the detector; synchronized)
-seed = hex2dec('b4d533d');
 rng(seed);
 
-% Strength factor
-alpha = 5;
-
-% Read original images
-base_im_dir = 'images';
-im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
+% Read mark
+im_mark = imread(mark);
 
 for idx = 1:length(im_files)
     curr_im = strcat(base_im_dir, '\', im_files{idx}, '.bmp');
     
     im_in = imread(curr_im);
     [w, h] = size(im_in);
-
-    % Read mark
-    im_mark = imread(strcat(base_im_dir, '\', 'mark.bmp'));
 
     % Resulting marked image
     im_out = zeros(w, h);
@@ -51,7 +53,7 @@ for idx = 1:length(im_files)
 
     imwrite(uint8(im_out), strcat(base_im_dir, '\', im_files{idx}, '_e_mod.bmp'));
 end
-
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. A perceptible noise (so-called 'salt-and-pepper' noise) cand be
 %    observed. This corresponds to the case where the value of a pixel

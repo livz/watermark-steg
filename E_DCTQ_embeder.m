@@ -1,7 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % E_DCTQ -- embed an authentication mark by quantizing coefficients in the
 %           block DCT of an image
+% Arguments:
+%   base_im_dir -- base folder for images and output files
+%   im_files -- array with path of image files
+%   seed -- seed for random number generator
+%   alpha -- strength parameter / quality factor
+%   alpha2 -- scale compression factor to be applied after embeding
+%
+% Return:
+%   no return value
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function E_DCTQ_embeder(base_im_dir, im_files, seed, alpha, alpha2)
 
 % DCT Coefficients used to embed a semi-fragile watermark 
 coefs = [                  15 ...
@@ -24,19 +34,7 @@ Qt = [16  11  10  16  24  40  51  61 ...
 
 % Initialize internal random number generator
 % (same initial state as the detector; synchronized)
-seed = hex2dec('dc7533d');
 rng(seed);
-
-% Strength parameter / quality factor
-alpha = 0.3;
-
-% Scale compression factor to be applied after embeding
-% (alpha2 < alpha)
-alpha2 = 0.35;
-
-% Read original images
-base_im_dir = 'images';
-im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
 
 for idx = 1:length(im_files)
     curr_im = strcat(base_im_dir, '\', im_files{idx}, '.bmp');
@@ -92,7 +90,7 @@ for idx = 1:length(im_files)
     % Compressed image after embeding watermark
     imwrite(uint8(im_out_c), strcat(base_im_dir, '\', im_files{idx}, '_e_dctq_comp.bmp'));
 end
-
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. The 4 random bits are embedded in the high-frequency DCT coefficients
 %    of each 8 x 8 bock of the image. So, as long as the quantzation

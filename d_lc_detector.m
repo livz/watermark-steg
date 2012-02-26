@@ -8,19 +8,19 @@
 %    - original images whose pixels have values close to extremes of the
 %      allowable range (0..255)
 %    - original images with relatively flat histograms
+%
+% Arguments:
+%   base_im_dir -- base folder for images and output files
+%   im_files -- array with path of image files
+%   seed -- seed for random number generator
+%   alpha -- strength factor
+%   tlc -- linear correlation threshold
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+function D_LC_detector(base_im_dir, im_files, seed, alpha, tlc)
 % Initialize internal random number generator
 % (same initial state as the embeder; synchronized)
-seed = hex2dec('b4d533d');
 rng(seed);
-
-% Linear correlation threshold
-tlc = 5;
-
-% Read original images
-base_im_dir = 'images';
-im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
 
 for idx = 1:length(im_files)
     curr_im = strcat(base_im_dir, '\', im_files{idx}, '_e_mod.bmp');
@@ -48,7 +48,7 @@ for idx = 1:length(im_files)
             mark(i,j) = bit;
             
             % try to reconstruct original image
-            im_orig((i-1)*8+1: i*8, (j-1)*8+1: j*8) = mod(double(block) - floor(tlc * wm + 0.5), 256);
+            im_orig((i-1)*8+1: i*8, (j-1)*8+1: j*8) = mod(double(block) - floor(alpha * wm + 0.5), 256);
             
         end
     end
@@ -56,7 +56,7 @@ for idx = 1:length(im_files)
     imwrite(uint8(mark), strcat(base_im_dir, '\', im_files{idx}, '_d_lc_mark.bmp'));
     imwrite(uint8(im_orig), strcat(base_im_dir, '\', im_files{idx}, '_d_lc_restored.bmp'));
 end
-
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1. The clipping problem from E_BLIND algorithm is solved by the modulo
 %    256 addition, that restores entirely the original bits.
