@@ -38,7 +38,11 @@ base_im_dir = 'images';
 im_files = {'fish', 'jump', 'lena', 'plane', 'sea'};
 
 for im_idx = 1:length(im_files)
-    curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '_e_dctq.bmp');
+    % Detect watermark after embedding
+    %curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '_e_dctq.bmp');
+    
+    % Detect watermark after compression
+    curr_im = strcat(base_im_dir, '\', im_files{im_idx}, '_e_dctq_comp.bmp');
     
     im_in = imread(curr_im);
     [w, h] = size(im_in);
@@ -77,8 +81,8 @@ for im_idx = 1:length(im_files)
     
     % Percent of matching bits
     p_match = (total-delta)/total*100;
-    fprintf('Maximum possible bits in %s:  %d. Different : %d. Matched: %2.3f%%. ', ...
-        char(strcat(im_files(im_idx), '.bmp')), total, delta, p_match);
+    fprintf('Maximum possible bits in %s:  %d. Matched : %d (%2.3f%%). ', ...
+        char(strcat(im_files(im_idx), '.bmp')), total, total - delta, p_match);
     if (p_match>tm)
         fprintf('Authentic.\n');
     else
