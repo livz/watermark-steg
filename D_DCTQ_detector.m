@@ -85,3 +85,19 @@ for im_idx = 1:length(im_files)
     end
 end
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-- Notes --%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1. a. As it was expected (because of the equation 11.6), the embeded
+%       watermark is correctly recognized after simulating JPEG compression
+%       with a smaller factor.
+%    b. The behaviour from diagram 11.16 is reproduced: for alpha2<alpha
+%       cases, the watermark is recognized entirely (tested with 0.2, 0.1).
+%       For alpha2>alpha, the number of bits recognized is a lot smaller
+%       (tested with 0.35, 0.4, 0.5, 06).
+%
+% 2. This authentication/detection system works only for a particular class
+%    of distortions (compressions using the default JPEG compression
+%    algorithm). Other algorithms and optimizations exist, so this is not
+%    very robust in practice. If tested with a commercial compressing tool
+%    for example, the detection rates drop to 50% (practically no detection).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
