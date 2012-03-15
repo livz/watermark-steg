@@ -16,8 +16,11 @@ function ret_code = DataHide(img_in, msg, img_out)
 MAX_LEN = 512;
 ret_code = 0;
 
+% Log file
+fileID = fopen('hide_log.txt','w');
+
 % Read input image
-image = imread(img_in);
+image = double(imread(img_in));
 
 % Get width and heigth
 [w, h] = size(image);
@@ -40,6 +43,8 @@ end
 bin_msg(1:len_msg) = msg - 0;
 bin_msg = reshape(de2bi(bin_msg, 8), 1, MAX_LEN * 8);
 
+ones = sum(bin_msg(:)==1);
+
 cnt = 1;
 for i=1:w/8
     for j=1:h/8
@@ -47,17 +52,21 @@ for i=1:w/8
         block = image((i-1)*8+1: i*8, (j-1)*8+1: j*8);
         
         D = dct(reshape(block, 1, 8*8));  % DCT transform
-          
+        fprintf(fileID, 'D(1) before embed: %f\n', D(1));
+        
         % Sequentialy take each secret bit
         secret_bit = bin_msg(cnt);
         
         % ... and embed it in the LSB of first coefficient
-        if (secret_bit == 0)
-            D(64) = 0;
-        end
+        D(1) = bitset(round(D(1)), 1, secret_bit);
+        fprintf(fileID, 'D(1) after embed: %f\n', D(1));
+        
+        fprintf(fileID,'%d D(1)=%d\n', cnt, D(1));
         
         N = idct(D);    % Inverse DCT transform
-       
+        X = dct(N);
+        fprintf(fileID, 'D(1) after quant. : %f\n', X(1));
+        
         % Write compressed block
         im_out((i-1)*8+1: i*8, (j-1)*8+1: j*8) = reshape(N, 8, 8);
         
@@ -66,6 +75,8 @@ for i=1:w/8
 end
 
 % Write output to file
-imwrite(im_out, img_out);
+imwrite(uint8(im_out), img_out);
+
+fclose(fileID);
 
 end

@@ -13,8 +13,11 @@
 function out_msg = DataExtract(img_in)
 MAX_LEN = 512;
 
+% Log file
+fileID = fopen('extract_log.txt','w');
+
 % Read input image adn convert to double
-image = imread(img_in);
+image = double(imread(img_in));
 
 % Get width and heigth
 [w, h] = size(image);
@@ -30,14 +33,16 @@ for i=1:w/8
         
         D = dct(reshape(block, 1, 8*8));  % DCT transform
         
-        % Sequentialy get each secret bit
+        % Sequentialy get each secret bit        
+        out_msg(cnt) = bitget(round(D(1)), 1);
         
-        out_msg(cnt) = (round(D(64)) ~= 0);
-              
+        fprintf(fileID,'%d D(1)=%d\n', cnt, round(D(1)));
+        
         cnt = cnt + 1;
     end
 end
 
-ones = sum(out_msg(:)~=1)
+ones = sum(out_msg(:) == 1);
+fclose(fileID);
 
 end
