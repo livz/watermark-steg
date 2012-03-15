@@ -14,13 +14,24 @@
 
 function ret_code = DataHide(img_in, msg, img_out)
 MAX_LEN = 512;
+
+% standard quantization table
+Qt = [16  11  10  16  24  40  51  61 ...
+    12  12  14  19  26  58  60  55 ...
+    14  13  16  24  40  57  69  56 ...
+    14  17  22  29  51  87  80  62 ...
+    18  22  37  56  68 109 103  77 ...
+    24  35  55  64  81 104 113  92 ...
+    49  64  78  87 103 121 120 101 ...
+    72  92  95  98 112 100 103 99];
+
 ret_code = 0;
 
 % Log file
-fileID = fopen('hide_log.txt','w');
+log_file = fopen('hide_log.txt','w');
 
 % Read input image
-image = double(imread(img_in));
+image = imread(img_in);
 
 % Get width and heigth
 [w, h] = size(image);
@@ -41,48 +52,40 @@ end
 
 % Convert string to binary representation
 bin_msg(1:len_msg) = msg - 0;
-bin_msg = reshape(de2bi(bin_msg, 8), 1, MAX_LEN * 8);
 
-ones = sum(bin_msg(:)==1);
+bin_msg = reshape(de2bi(bin_msg, 8), 1, MAX_LEN * 8);
 
 cnt = 1;
 for i=1:w/8
     for j=1:h/8
-        % Work with each 8x8 block
-        block = image((i-1)*8+1: i*8, (j-1)*8+1: j*8);
-        
+        block = image((i-1)*8+1: i*8, (j-1)*8+1: j*8);  % 8x8 block
         D = dct(reshape(block, 1, 8*8));  % DCT transform
+        C = round(D./Qt);   % After quantization
+        R = Qt.*C;   % Quantized DCT coefficients
         
-        % Sequentialy take each secret bit
+        % Embed 1 bit last  quantized coefficient
         secret_bit = bin_msg(cnt);
+        if (secret_bit == 1)
+            R(64) = 255;
+        else
+            R(64) = 0;
+        end
         
-        % ... and embed it in the LSB of first coefficient
-        D(1) = bitset(round(D(1)), 1, secret_bit);
+        fprintf(log_file, '%d Quantized R(64): %d\n', cnt, R(64));
+                
+        N = idct(R); % Inverse DCT transform
         
-        fprintf(fileID,'%d D(1)=%d\n', cnt, D(1));
-        
-        N = idct(D);    % Inverse DCT transform
-        
-        % Write compressed block
         im_out((i-1)*8+1: i*8, (j-1)*8+1: j*8) = reshape(N, 8, 8);
-        
+                
         cnt = cnt + 1;
     end
 end
 
-%delta = uint8(image)-uint8(im_out);
-delta = uint8(dct(image))-uint8(dct(im_out));
-sum(delta(:) ~= 0)
-
+fprintf(log_file, '%d ones', sum(bin_msg(:)==1));
 
 % Write output to file
 imwrite(uint8(im_out), img_out);
 
-im2 = imread(img_out);
-delta2 = uint8(dct(image)) - uint8(dct(im2));
-sum(delta2(:) ~= 0)
-
-
-fclose(fileID);
+fclose(log_file);
 
 end

@@ -62,7 +62,7 @@ end
 %       q -- quality level in [1..100] range, where 1 means poorest image
 %       quality and highest compression, and 100 means best quality and
 %       lowest compression.
-%              alpha = (100-q)/50,     for 50<=q<=100
+%              alpha = (100-q)/50,     for 50<q<=100
 %              alpha = 50/q,           for 1<=q<=50
 %
 %       So for alpha=0.3 as in the exemples, that means a compression
