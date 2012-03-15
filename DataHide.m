@@ -52,20 +52,16 @@ for i=1:w/8
         block = image((i-1)*8+1: i*8, (j-1)*8+1: j*8);
         
         D = dct(reshape(block, 1, 8*8));  % DCT transform
-        fprintf(fileID, 'D(1) before embed: %f\n', D(1));
         
         % Sequentialy take each secret bit
         secret_bit = bin_msg(cnt);
         
         % ... and embed it in the LSB of first coefficient
         D(1) = bitset(round(D(1)), 1, secret_bit);
-        fprintf(fileID, 'D(1) after embed: %f\n', D(1));
-        
+                
         fprintf(fileID,'%d D(1)=%d\n', cnt, D(1));
         
         N = idct(D);    % Inverse DCT transform
-        X = dct(N);
-        fprintf(fileID, 'D(1) after quant. : %f\n', X(1));
         
         % Write compressed block
         im_out((i-1)*8+1: i*8, (j-1)*8+1: j*8) = reshape(N, 8, 8);
@@ -73,6 +69,10 @@ for i=1:w/8
         cnt = cnt + 1;
     end
 end
+
+delta = uint8(image)-uint8(im_out);
+sum(delta(:) ~= 0)
+
 
 % Write output to file
 imwrite(uint8(im_out), img_out);
