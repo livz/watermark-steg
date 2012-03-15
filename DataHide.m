@@ -58,7 +58,7 @@ for i=1:w/8
         
         % ... and embed it in the LSB of first coefficient
         D(1) = bitset(round(D(1)), 1, secret_bit);
-                
+        
         fprintf(fileID,'%d D(1)=%d\n', cnt, D(1));
         
         N = idct(D);    % Inverse DCT transform
@@ -70,12 +70,18 @@ for i=1:w/8
     end
 end
 
-delta = uint8(image)-uint8(im_out);
+%delta = uint8(image)-uint8(im_out);
+delta = uint8(dct(image))-uint8(dct(im_out));
 sum(delta(:) ~= 0)
 
 
 % Write output to file
 imwrite(uint8(im_out), img_out);
+
+im2 = imread(img_out);
+delta2 = uint8(dct(image)) - uint8(dct(im2));
+sum(delta2(:) ~= 0)
+
 
 fclose(fileID);
 
