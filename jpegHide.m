@@ -30,6 +30,11 @@ lum = im.coef_arrays{im.comp_info(1).component_id};
 % Convert message string to binary representation
 bin_msg = msg - 0;
 bin_msg = reshape(de2bi(bin_msg, 8), 1, length(msg) * 8);
+
+% Add message size on 32 bits
+MAX_SIZE_BITS = 32;
+bin_msg = horzcat(de2bi(length(bin_msg), MAX_SIZE_BITS), bin_msg);
+
 len_m = length(bin_msg);
 
 cnt = 1;
@@ -38,7 +43,7 @@ for i=1:w
         coef = lum(i,j);
         
         if (cnt <= len_m)
-            if (coef ~=0 && coef ~=1 && coef ~= -1)
+            if (coef ~= 0 && coef ~= 1 && coef ~= -1)
                 % Embed a bit here
                 coef = sign(coef) * bitset(abs(coef), 1, bin_msg(cnt));
                 
@@ -53,14 +58,15 @@ for i=1:w
 end
 
 if (cnt == len_m + 1)
-    fprintf(log, 'All %d characters embedded\r\n', len_m/8);
+    fprintf(log, 'All %d bits embedded\r\n', len_m);
     ret = 0;
 else
-    fprintf(log, 'Embedded %f of %d characters\r\n', cnt/8, len_m/8);
+    fprintf(log, 'Embedded %d of %d bits\r\n', cnt, len_m);
     ret = 1;
 end
 
 % Write modified JPEG to output file
+im.coef_arrays{im.comp_info(1).component_id} = lum;
 jpeg_write(im, stego);
 
 fclose(log);
