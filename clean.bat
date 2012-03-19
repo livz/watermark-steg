@@ -1,5 +1,7 @@
 @echo off
+
 del /q /s "*.asv"
+del /q /s "*.log"
 
 set im_dir=images
 del /q /s %im_dir%\*_e_mod.bmp
