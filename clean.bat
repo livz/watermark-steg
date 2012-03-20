@@ -2,6 +2,8 @@
 
 del /q /s "*.asv"
 del /q /s "*.log"
+del /q /s "out.bmp"
+del /q /s "out.jpg"
 
 set im_dir=images
 del /q /s %im_dir%\*_e_mod.bmp

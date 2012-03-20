@@ -61,7 +61,7 @@ if (cnt == len_m + 1)
     fprintf(log, 'All %d bits embedded\r\n', len_m);
     ret = 0;
 else
-    fprintf(log, 'Embedded %d of %d bits\r\n', cnt, len_m);
+    fprintf(log, 'Embedded %d of %d bits\r\n', cnt-1, len_m);
     ret = 1;
 end
 
